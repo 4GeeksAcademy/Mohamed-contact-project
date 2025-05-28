@@ -6,7 +6,7 @@ export const Navbar = () => {
 		<nav className="navbar navbar-light bg-light">
         <div className="container d-flex">
             <div className="ms-auto">
-                <Link to="Input">
+                <Link to="/Input">
                     <button className="btn btn-primary">Add a new Contact</button>
                 </Link>
             </div>

@@ -11,7 +11,7 @@ export const Home = () => {
 		<div className="text-center mt-5">
 			<h1>My Contacts:</h1>
 			<Card/>
-			<Input/>
+			
 			
 		</div>
 	);
