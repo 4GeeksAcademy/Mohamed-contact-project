@@ -4,6 +4,7 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 export const Card = () => {
     return (
+        <div className="page-center">
         <div className="contact-card">
             <img
                 className="contact-photo"
@@ -24,6 +25,7 @@ export const Card = () => {
                     <FiTrash2 />
                 </button>
             </div>
+        </div>
         </div>
     );
 };
