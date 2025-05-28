@@ -1,0 +1,38 @@
+.contact-card {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    background: #4E6688;
+    border-radius: 8px;
+    width: 40%;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.contact-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+   
+    margin-right: 20px;
+    border: 2px solid #eee;
+}
+
+.contact-info {
+    flex: 1;
+}
+
+.contact-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.4rem;
+    transition: color 0.2s;
+}
+
