@@ -38,6 +38,12 @@ export const Input = () => {
         setAddress("");
         navigate("/");
     }
+
+
+   
+
+
+
     return (
         <form className="contact-input-form">
             <div>

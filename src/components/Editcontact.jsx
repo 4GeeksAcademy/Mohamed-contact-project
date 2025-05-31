@@ -30,7 +30,7 @@ export const EditContact = () => {
     }, [id, store.BASE_URL, store.SLUG, navigate]);
 
     async function handleUpdate(e) {
-        e.preventDefault();
+        // e.preventDefault();
         const requestBody = { name, email, phone, address };
         const res = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts/${id}`, {
             method: "PUT",
@@ -88,7 +88,7 @@ export const EditContact = () => {
                 />
             </div>
             <button type="submit" className="btn btn-primary"
-           
+            onClick ={handleUpdate}
             >Update Contact</button>
             <p 
                     className="text-decoration-underline text-primary"
