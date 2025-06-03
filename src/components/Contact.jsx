@@ -12,7 +12,7 @@ export const Contact = () => {
         async function fetchContacts() {
             const res = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts`);
             const data = await res.json();
-            setContacts(data.contacts || data); // Adjust if your API returns {contacts: [...]}
+            setContacts(data.contacts || data); 
         }
         fetchContacts();
     }, [store.BASE_URL, store.SLUG]);

@@ -1,32 +1,49 @@
-export const initialStore=()=>{
-  return{
+export const initialStore = () => {
+  return {
+    BASE_URL: "https://playground.4geeks.com/contact/agendas",
+    SLUG: "Mohamed",
     message: null,
-    todos: [
-      {
-        id: 1,
-        title: "Make the bed",
-        background: null,
-      },
-      {
-        id: 2,
-        title: "Do my homework",
-        background: null,
-      }
-    ]
-  }
-}
+    contacts: []
+  };
+};
 
 export default function storeReducer(store, action = {}) {
-  switch(action.type){
-    case 'add_task':
-
-      const { id,  color } = action.payload
-
+  switch (action.type) {
+    case 'set_contacts': {
+      // Replace all contacts with a new array
       return {
         ...store,
-        todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
+        contacts: action.payload.contacts
       };
+    }
+    case 'add_contact': {
+      // Add a new contact to the contacts array
+      return {
+        ...store,
+        contacts: [...store.contacts, action.payload.contact]
+      };
+    }
+    case 'delete_contact': {
+      // Remove a contact by id
+      return {
+        ...store,
+        contacts: store.contacts.filter(
+          contact => contact.id !== action.payload.id
+        )
+      };
+    }
+    case 'update_contact': {
+      // Update a contact by id
+      return {
+        ...store,
+        contacts: store.contacts.map(contact =>
+          contact.id === action.payload.contact.id
+            ? { ...contact, ...action.payload.contact }
+            : contact
+        )
+      };
+    }
     default:
       throw Error('Unknown action.');
-  }    
+  }
 }
