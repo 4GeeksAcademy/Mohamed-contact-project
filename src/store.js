@@ -1,23 +1,21 @@
-export const initialStore = () => {
-  return {
-    BASE_URL: "https://playground.4geeks.com/contact/agendas",
-    SLUG: "Mohamed",
-    message: null,
-    contacts: []
-  };
-};
+export const initialStore = () => ({
+  BASE_URL: "https://playground.4geeks.com/contact/agendas",
+  SLUG: "Mohamed",
+  message: null,
+  contacts: []
+});
 
 export default function storeReducer(store, action = {}) {
   switch (action.type) {
     case 'set_contacts': {
-      // Replace all contacts with a new array
+      //  a new array
       return {
         ...store,
         contacts: action.payload.contacts
       };
     }
     case 'add_contact': {
-      // Add a new contact to the contacts array
+      // Add a new contact 
       return {
         ...store,
         contacts: [...store.contacts, action.payload.contact]

@@ -14,24 +14,34 @@ export const Input = () => {
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
     async function addNewContact() {
-        if (name === "" || phone === "" || email === "" || address === "") throw new Error (
-            "missing a field"
-        );
+         e.preventDefault();
+       if (name === "" || phone === "" || email === "" || address === "") {
+        alert("Missing a field");
+        return;
+    }
         const requestBody = {
             name: name, 
             email: email, 
             phone: phone,  
             address: address, 
         };
-        const response = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts`, {
-            method: "POST", 
-            body: JSON.stringify(requestBody), 
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const body = await response.json();
-        if (!response.ok) throw new Error(`status:${response.status}, message: ${body}`);
+
+         const response = await fetch(
+        `${store.BASE_URL}/${store.SLUG}/contacts`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody)
+        }
+    );
+
+         const body = await response.json();
+        if (!response.ok) {
+            alert(`status:${response.status}, message: ${body}`);
+            return;
+        }
+    
+        dispatch({ type: "add_contact", payload: { contact: body } });
         setName("");
         setPhone("");
         setEmail(""); 
@@ -45,7 +55,7 @@ export const Input = () => {
 
 
     return (
-        <form className="contact-input-form">
+        <form className="contact-input-form" onSubmit={addNewContact}>
             <div>
                 <input
                     type="text"
@@ -91,6 +101,7 @@ export const Input = () => {
                 />
             </div>
             <button type="submit" className="btn btn-primary">Save Contact</button>
+            <Link to="/" className="btn btn-secondary">Back Home</Link>
         </form>
     );
 };
