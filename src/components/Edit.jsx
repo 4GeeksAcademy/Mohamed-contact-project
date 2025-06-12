@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 
-export const Editcontact = () => {
+export const Edit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { store, dispatch } = useGlobalReducer();
