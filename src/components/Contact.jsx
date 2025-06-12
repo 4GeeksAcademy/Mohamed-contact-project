@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useNavigate } from "react-router-dom";
 
 export const Contact = () => {
-    const { store } = useGlobalReducer();
-    const [contacts, setContacts] = useState([]);
+    const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        async function fetchContacts() {
-            const res = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts`);
-            const data = await res.json();
-            setContacts(data.contacts || data); 
-        }
-        fetchContacts();
-    }, [store.BASE_URL, store.SLUG]);
 
     const handleEdit = (id) => {
         navigate(`/edit/${id}`);
@@ -23,15 +13,23 @@ export const Contact = () => {
 
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this contact?")) return;
-        const res = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts/${id}`, {
-            method: "DELETE"
-        });
-        if (res.ok) {
-            setContacts(contacts.filter(contact => contact.id !== id));
-        } else {
-            alert("Failed to delete contact");
+        try {
+            const res = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts/${id}`, {
+                method: "DELETE"
+            });
+            if (res.ok) {
+                dispatch({ type: "delete_contact", payload: { id } });
+            } else {
+                alert("Failed to delete contact");
+            }
+        } catch (error) {
+            console.error("Error deleting contact:", error);
+            alert("Failed to delete contact. Please try again.");
         }
     };
+
+    // Ensure contacts is always an array
+    const contacts = Array.isArray(store.contacts) ? store.contacts : [];
 
     return (
         <div className="page-center">
@@ -50,10 +48,18 @@ export const Contact = () => {
                         <p><strong>Address:</strong> {contact.address}</p>
                     </div>
                     <div className="contact-actions">
-                        <button className="icon-btn" onClick={() => handleEdit(contact.id)}>
+                        <button 
+                            className="icon-btn" 
+                            onClick={() => handleEdit(contact.id)}
+                            title="Edit contact"
+                        >
                             <FiEdit2 />
                         </button>
-                        <button className="icon-btn" onClick={() => handleDelete(contact.id)}>
+                        <button 
+                            className="icon-btn" 
+                            onClick={() => handleDelete(contact.id)}
+                            title="Delete contact"
+                        >
                             <FiTrash2 />
                         </button>
                     </div>
