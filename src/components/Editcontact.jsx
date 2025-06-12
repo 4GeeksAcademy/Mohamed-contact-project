@@ -1,101 +1,130 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import { useNavigate, useParams } from "react-router-dom";
 
-export const EditContact = () => {
-    const { store } = useGlobalReducer();
-    const navigate = useNavigate();
+export const Editcontact = () => {
     const { id } = useParams();
-
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
+    const navigate = useNavigate();
+    const { store, dispatch } = useGlobalReducer();
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        address: ""
+    });
 
     useEffect(() => {
-        async function fetchContact() {
-            const res = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts/${id}`);
-            if (!res.ok) {
-                alert("Failed to fetch contact");
-                navigate("/");
-                return;
-            }
-            const data = await res.json();
-            setName(data.name || "");
-            setEmail(data.email || "");
-            setPhone(data.phone || "");
-            setAddress(data.address || "");
+        // Find the contact to edit
+        const contact = store.contacts.find(contact => contact.id === parseInt(id));
+        if (contact) {
+            setFormData({
+                name: contact.name,
+                email: contact.email,
+                phone: contact.phone,
+                address: contact.address
+            });
         }
-        fetchContact();
-    }, [id, store.BASE_URL, store.SLUG, navigate]);
+    }, [id, store.contacts]);
 
-    async function handleUpdate(e) {
-        // e.preventDefault();
-        const requestBody = { name, email, phone, address };
-        const res = await fetch(`${store.BASE_URL}/${store.SLUG}/contacts/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(requestBody),
-        });
-        if (!res.ok) {
-            alert("Failed to update contact");
-            return;
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        try {
+            const response = await fetch(
+                `${store.BASE_URL}/${store.SLUG}/contacts/${id}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to update contact');
+            }
+
+            const updatedContact = await response.json();
+            dispatch({ 
+                type: "update_contact", 
+                payload: { contact: { ...updatedContact, id: parseInt(id) } } 
+            });
+            
+            navigate("/");
+        } catch (error) {
+            console.error("Error updating contact:", error);
+            alert("Failed to update contact. Please try again.");
         }
-        navigate("/");
-    }
+    };
 
     return (
-        <form className="contact-input-form" onSubmit={handleUpdate}>
-            <h2>Edit Contact</h2>
-            <div>
-                <input
-                    type="text"
-                    name="fullName"
-                    placeholder="Full name"
-                    required
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                />
-            </div>
-            <div>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    required
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                />
-            </div>
-            <div>
-                <input
-                    type="tel"
-                    name="phone"
-                    placeholder="Phone number"
-                    required
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                />
-            </div>
-            <div>
-                <input
-                    type="text"
-                    name="address"
-                    placeholder="Address"
-                    required
-                    value={address}
-                    onChange={e => setAddress(e.target.value)}
-                />
-            </div>
-            <button type="submit" className="btn btn-primary"
-            onClick ={handleUpdate}
-            >Update Contact</button>
-            <p 
-                    className="text-decoration-underline text-primary"
-                    onClick={e => navigate ("/")}
-                    style={{ cursor: "pointer" }}
-                    >Cancel
-                    </p>
-        </form>
+        <div className="container mt-5">
+            <h2 className="text-center mb-4">Edit Contact</h2>
+            <form onSubmit={handleSubmit} className="contact-input-form">
+                <div className="mb-3">
+                    <input
+                        type="text"
+                        name="name"
+                        className="form-control"
+                        placeholder="Full Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <input
+                        type="email"
+                        name="email"
+                        className="form-control"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <input
+                        type="tel"
+                        name="phone"
+                        className="form-control"
+                        placeholder="Phone Number"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <input
+                        type="text"
+                        name="address"
+                        className="form-control"
+                        placeholder="Address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="d-flex justify-content-center gap-2">
+                    <button type="submit" className="btn btn-primary">
+                        Update Contact
+                    </button>
+                    <button 
+                        type="button" 
+                        className="btn btn-secondary"
+                        onClick={() => navigate("/")}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
     );
-};
+}; 
