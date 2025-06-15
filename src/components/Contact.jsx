@@ -28,7 +28,7 @@ export const Contact = () => {
         }
     };
 
-    // Ensure contacts is always an array
+    //contacts  array
     const contacts = Array.isArray(store.contacts) ? store.contacts : [];
 
     return (

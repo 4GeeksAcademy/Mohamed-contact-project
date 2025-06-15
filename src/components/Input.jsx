@@ -93,7 +93,7 @@ export const Input = () => {
                     value={address}
                     onChange={e => setAddress(e.target.value)}
                 />
-            </div>
+            </div> 
             <button type="submit" className="btn btn-primary">Save Contact</button>
             <Link to="/" className="btn btn-secondary">Back Home</Link>
         </form>
